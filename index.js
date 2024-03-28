@@ -1,10 +1,12 @@
 const express = require("express");
 const app = express();
-const host = '192.168.30.26';
+const bodyParser =  require("body-parser")
+const host = 'localhost';
 const port = 4040;
 
-app.set('view engine','ejs')
+app.set('view engine','ejs');
 app.use(express.static('public'));
+app.use(bodyParser.urlencoded({extend: false}));
 
 
 app.get("/perguntar", (req, res) => {
@@ -15,6 +17,12 @@ app.get("/perguntar", (req, res) => {
 app.get("/", (req, res) => {
     res.render("index");
 
+})
+
+app.post("/salvarPergunta", (req,res)=> {
+    var titulo = req.body.titulo;
+    var pergunta = req.body.pergunta;
+    res.send("formulario recebido " + titulo + pergunta)
 })
 
 
