@@ -4,7 +4,8 @@ const bodyParser =  require("body-parser")
 const host = 'localhost';
 const port = 4040;
 const connection = require('./database/database');
-const Pergunta = require('./database/Pergunta')
+const Pergunta = require('./database/Pergunta');
+const Resposta = require('./database/Resposta');
 
 connection
 .authenticate()
