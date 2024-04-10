@@ -6,6 +6,7 @@ const port = 4040;
 const connection = require('./database/database');
 const Pergunta = require('./database/Pergunta');
 const Resposta = require('./database/Resposta');
+const { where } = require("sequelize");
 
 connection
 .authenticate()
@@ -49,19 +50,38 @@ app.post("/salvarPergunta", (req,res)=> {
 })
  app.get("/pergunta/:id", (req,res) => {
     var id = req.params.id;
+
     Pergunta.findOne({
         where: {id: id}
     }).then((pergunta) => {
-        if (pergunta != undefined) {
-            res.render("pergunta",{
-                pergunta: pergunta
-            })
-        }else{
-            res.redirect("/")
-        }
+        if (pergunta != undefined ) {
+            Resposta.findAll(
+                {where: {pergunta_Id: id},
+                 raw:true,
+                 order:[['id','DESC']]
+    }).then(resposta =>{
+        res.render("pergunta",{
+            pergunta: pergunta,
+            resposta: resposta
     })
+            })
+            }else{
+                res.redirect("/")
+            }
+        })
+   
  })
+  
+ app.post("/responder",(req,res) =>{
+    var corpo = req.body.corpo;
+    var perguntaId = req.body.pergunta;
 
+    Resposta.create({
+        corpo: corpo,
+        pergunta_Id: perguntaId
+    })
+    res.redirect('/pergunta/'+ perguntaId)
+ })
 
 
 app.listen(port, host, () => {
